@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "ai-orchestrator"
+version = "0.1.0"
+description = "Telegram-based AI Orchestrator"
+authors = ["Mikhail Singatullin <you@example.com>"]
+readme = "README.md"
+packages = [{ include = "ai_orchestrator" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-telegram-bot = "^21.11.1"
+python-dotenv = "^1.1"
+
+[build-system]
+requires = ["poetry-core>=1.7.0"]
+build-backend = "poetry.core.masonry.api"
