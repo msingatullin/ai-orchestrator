@@ -8,3 +8,8 @@ services:
       - ./backend:/app/backend
     environment:
       - PYTHONUNBUFFERED=1
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+  redis:
+    image: redis:7-alpine

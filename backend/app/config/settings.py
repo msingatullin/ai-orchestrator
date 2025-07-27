@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     database_url: str = "sqlite:///./test.db"
+    redis_url: str = "redis://localhost:6379/0"
 
     class Config:
         env_file = ".env"
