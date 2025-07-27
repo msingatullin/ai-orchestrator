@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     database_url: str = "sqlite:///./test.db"
     redis_url: str = "redis://localhost:6379/0"
+    llm_provider: str = "simple"
+    openai_api_key: str | None = None
 
     class Config:
         env_file = ".env"
