@@ -18,5 +18,16 @@ class MessageProcessingService:
         raw = self.db.query(RawMessage).filter(RawMessage.id == message_id).first()
         if not raw:
             raise ValueError("raw message not found")
-        processed = self.pipeline.process(raw)
+        prev = None
+        if raw.conversation_id:
+            prev = (
+                self.db.query(RawMessage)
+                .filter(
+                    RawMessage.conversation_id == raw.conversation_id,
+                    RawMessage.timestamp < raw.timestamp,
+                )
+                .order_by(RawMessage.timestamp.desc())
+                .first()
+            )
+        processed = self.pipeline.process(raw, previous_message=prev)
         return processed
