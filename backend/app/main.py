@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .api import auth, data_collection
+from .api import auth, data_collection, vector_db
 from .digital_twin.api import digital_twin
 from .config.database import Base, engine
 from .config.settings import get_settings
@@ -13,6 +13,7 @@ app = FastAPI(title="AI Agents Ecosystem")
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(data_collection.router, prefix="/data-collection", tags=["data-collection"])
 app.include_router(digital_twin.router, prefix="/digital-twin", tags=["digital-twin"])
+app.include_router(vector_db.router, prefix="/vectors", tags=["vectors"])
 
 
 @app.on_event("startup")

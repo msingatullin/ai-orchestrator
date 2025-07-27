@@ -19,4 +19,5 @@ class ConversationContext(BaseModel):
     topic_keywords: List[str] = Field(default_factory=list)
     conversation_type: str
     average_response_time: float | None = None
+    summary: str | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)

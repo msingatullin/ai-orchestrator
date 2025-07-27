@@ -23,4 +23,5 @@ class UserCommunicationStyle(BaseModel):
     active_hours: List[int] = Field(default_factory=list)
     conversation_starters: List[str] = Field(default_factory=list)
     typical_responses: Dict[str, str] = Field(default_factory=dict)
+    dominant_sentiment: str | None = None
     updated_at: datetime = Field(default_factory=datetime.utcnow)

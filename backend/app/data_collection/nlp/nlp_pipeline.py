@@ -34,9 +34,10 @@ class NLPPipeline:
     def process(self, message: RawMessage) -> ProcessedMessage:
         cleaned = self.clean_text(message.raw_content)
         language = self.detect_language(cleaned)
+        tokens = cleaned.split()
         sentiment = self.sentiment.analyze(cleaned)
         contains_emoji = bool(self.emoji_re.search(message.raw_content))
-        word_count = len(cleaned.split())
+        word_count = len(tokens)
         formality = self.formality_level(cleaned)
         return ProcessedMessage(
             raw_message_id=message.id,
@@ -49,4 +50,6 @@ class NLPPipeline:
             response_time_minutes=None,
             contains_emoji=contains_emoji,
             word_count=word_count,
+            tokens=tokens,
+            conversation_id=message.conversation_id,
         )
