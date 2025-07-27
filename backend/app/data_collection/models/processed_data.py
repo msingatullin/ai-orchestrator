@@ -20,5 +20,6 @@ class ProcessedMessage(BaseModel):
     contains_emoji: bool = False
     word_count: int = 0
     tokens: List[str] = Field(default_factory=list)
+    lemmas: List[str] = Field(default_factory=list)
     conversation_id: str | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
