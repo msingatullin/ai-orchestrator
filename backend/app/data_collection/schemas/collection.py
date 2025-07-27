@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Dict, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from pydantic.config import ConfigDict
 
 
 class RawMessageBase(BaseModel):
@@ -11,7 +12,7 @@ class RawMessageBase(BaseModel):
     source: str
     source_id: str
     raw_content: str
-    metadata: Dict[str, Any] = {}
+    metadata: Dict[str, Any] = Field(default_factory=dict, alias="message_metadata")
     timestamp: datetime
     is_outgoing: bool = False
     conversation_id: Optional[str] = None
@@ -25,6 +26,4 @@ class RawMessageRead(RawMessageBase):
     id: str
     created_at: datetime
 
-    class Config:
-        orm_mode = True
-        fields = {"metadata": "message_metadata"}
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
