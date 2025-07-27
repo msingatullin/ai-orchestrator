@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from backend.app.config.database import Base
@@ -43,7 +43,8 @@ async def test_email_ingest_and_pipeline():
     FastAPILimiter.http_callback = cb
     await startup_event()
 
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         payload = {
             "id": "1",
             "body": "I love this product!",
