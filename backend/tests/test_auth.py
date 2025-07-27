@@ -2,7 +2,7 @@ import pytest
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[2]))
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from backend.app.config.database import Base
@@ -41,7 +41,8 @@ async def test_register_and_login():
         return None
     FastAPILimiter.http_callback = cb
     await startup_event()
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         resp = await ac.post("/auth/register", json={"email": "a@a.com", "password": "pass"})
         assert resp.status_code == 200
         token = resp.json()["access_token"]
