@@ -20,6 +20,7 @@ def test_embedding_creation():
     )
     vector = service.encode_text(pm.cleaned_text)
     assert len(vector) == service.dimension
+    assert service.dimension in (384, 1536)
 
 
 def test_vector_storage_and_search():
