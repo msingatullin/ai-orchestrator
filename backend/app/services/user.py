@@ -14,6 +14,8 @@ class UserService:
             email=user_in.email,
             hashed_password=get_password_hash(user_in.password),
             full_name=user_in.full_name,
+            organization_id=user_in.organization_id,
+            role=user_in.role or "user",
         )
         self.db.add(user)
         self.db.commit()
