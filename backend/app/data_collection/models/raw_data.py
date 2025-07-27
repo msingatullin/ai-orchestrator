@@ -1,20 +1,24 @@
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Any, Dict, Optional
-from uuid import UUID, uuid4
+from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, JSON
+from sqlalchemy.sql import func
 
-from pydantic import BaseModel, Field
+from ...models.base import Base
 
 
-class RawMessage(BaseModel):
-    id: UUID = Field(default_factory=uuid4)
-    user_id: UUID
-    source: str
-    source_id: str
-    raw_content: str
-    metadata: Dict[str, Any] = Field(default_factory=dict)
-    timestamp: datetime
-    is_outgoing: bool
-    conversation_id: str
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+class RawMessage(Base):
+    """Raw message collected from external sources."""
+
+    __tablename__ = "raw_messages"
+
+    id = Column(String, primary_key=True, index=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    organization_id = Column(String, ForeignKey("organizations.id"), nullable=True)
+    source = Column(String, nullable=False)
+    source_id = Column(String, nullable=False)
+    raw_content = Column(String, nullable=False)
+    message_metadata = Column("metadata", JSON, nullable=True)
+    timestamp = Column(DateTime(timezone=True), nullable=False)
+    is_outgoing = Column(Boolean, default=False)
+    conversation_id = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
