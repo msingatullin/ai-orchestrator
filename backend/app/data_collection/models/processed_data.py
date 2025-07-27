@@ -19,4 +19,6 @@ class ProcessedMessage(BaseModel):
     response_time_minutes: int | None = None
     contains_emoji: bool = False
     word_count: int = 0
+    tokens: List[str] = Field(default_factory=list)
+    conversation_id: str | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)

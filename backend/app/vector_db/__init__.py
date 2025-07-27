@@ -1,4 +1,5 @@
 from .services.embedding_service import EmbeddingService
+from .services.transformers_embedding import TransformersEmbeddingService
 from .services.search_service import SearchService
 from .services.vector_store import VectorStoreService
 from .models.embeddings import MessageEmbedding
@@ -8,4 +9,5 @@ __all__ = [
     "SearchService",
     "VectorStoreService",
     "MessageEmbedding",
+    "TransformersEmbeddingService",
 ]

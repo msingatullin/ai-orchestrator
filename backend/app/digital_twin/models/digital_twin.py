@@ -15,6 +15,11 @@ class DigitalTwin(BaseModel):
     name: str
     status: str = "training"
     base_model: str = "gpt-3.5-turbo"
+    memory: list[str] = Field(default_factory=list)
+    context_window: int = 3
+    llm_backend: str = "simple"
+    persona_profile: Optional[dict] = None
+    style_profile: Optional[dict] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     communication_style: Optional[dict] = None
