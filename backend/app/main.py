@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from .api import auth, data_collection, vector_db
+from prometheus_fastapi_instrumentator import Instrumentator
+from .api import auth, data_collection, vector_db, admin
 from .digital_twin.api import digital_twin
 from .config.database import Base, engine
 from .config.settings import get_settings
@@ -14,6 +15,13 @@ app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(data_collection.router, prefix="/data-collection", tags=["data-collection"])
 app.include_router(digital_twin.router, prefix="/digital-twin", tags=["digital-twin"])
 app.include_router(vector_db.router, prefix="/vectors", tags=["vectors"])
+app.include_router(admin.router, prefix="/admin", tags=["admin"])
+
+
+@app.get("/health")
+async def healthcheck() -> dict:
+    """Simple healthcheck endpoint for Docker."""
+    return {"status": "ok"}
 
 
 @app.on_event("startup")
@@ -23,4 +31,9 @@ async def startup_event():
         await FastAPILimiter.init(redis_client)
     except Exception:
         # allow app startup even if Redis is unavailable (e.g., tests)
+        pass
+    try:
+        Instrumentator().instrument(app).expose(app)
+    except Exception:
+        # metrics are optional and should not break startup
         pass
