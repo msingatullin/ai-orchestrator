@@ -1,28 +1,30 @@
 import pytest
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+import os
+os.environ["DATABASE_URL"] = "sqlite:///./test.db"
+
 from httpx import AsyncClient, ASGITransport
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from backend.app.config.database import Base
+from backend.app.config.database import Base, get_settings, engine as app_engine, SessionLocal
 from backend.app.main import app, startup_event
 from fastapi_limiter import FastAPILimiter
-import os
-from backend.app.config.database import get_settings
 
 settings = get_settings()
 settings.redis_url = ""
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = app_engine
+TestingSessionLocal = SessionLocal
 
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 @pytest.fixture(autouse=True)
 def clear_db():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
