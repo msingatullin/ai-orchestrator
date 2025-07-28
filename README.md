@@ -23,3 +23,13 @@ Healthcheck доступен на `/health`, метрики Prometheus на `/me
 
 - Встроенный Swagger UI доступен на `/docs` для интерактивного тестирования API.
 - Запущен Celery брокер для асинхронных задач (`backend/app/tasks.py`). Пример задачи `generate_async` генерирует ответ от цифрового двойника во внешнем воркере.
+
+## Запуск в staging
+
+Для приближенного к продакшену окружения используется отдельный профиль Compose и прокси Nginx. Перед запуском выполните настройку переменных в `.env.production`.
+
+```bash
+docker compose --profile staging -f docker-compose.yml -f docker-compose.staging.yml up --build
+```
+
+При старте контейнера автоматически выполняются Alembic миграции, а Nginx доступен на порту 80.
