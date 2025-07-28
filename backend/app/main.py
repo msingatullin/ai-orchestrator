@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from prometheus_fastapi_instrumentator import Instrumentator
-from .api import auth, data_collection, vector_db, admin
+from .api import auth, data_collection, vector_db, admin, users
 from .digital_twin.api import digital_twin
 from .config.database import Base, engine
 from .config.settings import get_settings
@@ -16,6 +16,7 @@ app.include_router(data_collection.router, prefix="/data-collection", tags=["dat
 app.include_router(digital_twin.router, prefix="/digital-twin", tags=["digital-twin"])
 app.include_router(vector_db.router, prefix="/vectors", tags=["vectors"])
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
+app.include_router(users.router, prefix="/users", tags=["users"])
 
 
 @app.get("/health")

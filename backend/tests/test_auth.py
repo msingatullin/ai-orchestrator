@@ -56,3 +56,33 @@ async def test_register_and_login():
         resp = await ac.post("/auth/refresh", params={"refresh_token": rt})
         assert resp.status_code == 200
         assert resp.json()["access_token"]
+
+
+@pytest.mark.asyncio
+async def test_users_me():
+    class DummyRedis:
+        async def evalsha(self, *args, **kwargs):
+            return None
+
+    FastAPILimiter.redis = DummyRedis()
+
+    async def ident(request):
+        return "test"
+
+    FastAPILimiter.identifier = ident
+
+    async def cb(request, response, pexpire):
+        return None
+
+    FastAPILimiter.http_callback = cb
+    await startup_event()
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        resp = await ac.post("/auth/register", json={"email": "b@b.com", "password": "pass"})
+        assert resp.status_code == 200
+        token = resp.json()["access_token"]
+
+        resp = await ac.get("/users/me", headers={"Authorization": f"Bearer {token}"})
+        assert resp.status_code == 200
+        assert resp.json()["email"] == "b@b.com"
