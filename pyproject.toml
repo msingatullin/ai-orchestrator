@@ -25,6 +25,7 @@ redis = "^5.0"
 fastapi-limiter = "^0.1.5"
 sentence-transformers = "^5.0"
 openai = "^1.30"
+celery = "^5.3"
 
 [build-system]
 requires = ["poetry-core>=1.7.0"]
