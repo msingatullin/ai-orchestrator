@@ -48,7 +48,14 @@ async def test_vector_api_with_mock(monkeypatch):
             message_type="text",
             formality_level=0.1,
         )
-        payload = {k: (str(v) if hasattr(v, "hex") else v) for k, v in data.model_dump().items()}
+        def conv(v):
+            if hasattr(v, "hex"):
+                return str(v)
+            if hasattr(v, "isoformat"):
+                return v.isoformat()
+            return v
+
+        payload = {k: conv(v) for k, v in data.model_dump().items()}
         resp = await ac.post("/vectors/index", json=payload, params={"user_id": str(user_id)})
         assert resp.status_code == 200
         emb_id = resp.json()["embedding_id"]

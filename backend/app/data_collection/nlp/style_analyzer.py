@@ -22,6 +22,10 @@ class StyleAnalyzer:
                 emoji_usage_rate=0,
                 vocabulary_complexity=0,
                 sentence_structure={},
+                sentiment_distribution={},
+                emotion_patterns={},
+                dominant_sentiment=None,
+                response_time_pattern={},
             )
 
         avg_len = mean(m.word_count for m in msgs)
@@ -38,6 +42,31 @@ class StyleAnalyzer:
         long = sum(1 for m in msgs if m.word_count > 15) / len(msgs)
         structure = {"short": short, "medium": medium, "long": long}
 
+        sentiments = {"positive": 0, "negative": 0, "neutral": 0}
+        emotion_counts: dict[str, int] = {}
+        response_times: list[int] = []
+        for m in msgs:
+            if m.sentiment_score > 0.1:
+                sentiments["positive"] += 1
+            elif m.sentiment_score < -0.1:
+                sentiments["negative"] += 1
+            else:
+                sentiments["neutral"] += 1
+
+            for tag in getattr(m, "emotion_tags", []):
+                emotion_counts[tag] = emotion_counts.get(tag, 0) + 1
+
+            if m.response_time_minutes is not None:
+                response_times.append(m.response_time_minutes)
+
+        total = len(msgs)
+        sentiment_distribution = {k: v / total for k, v in sentiments.items()}
+        dominant_sentiment = max(sentiment_distribution, key=sentiment_distribution.get)
+        emotion_patterns = {k: v / total for k, v in emotion_counts.items()}
+        response_pattern = {}
+        if response_times:
+            response_pattern["average_minutes"] = sum(response_times) / len(response_times)
+
         return UserCommunicationStyle(
             user_id=user_id,
             source=source,
@@ -46,4 +75,8 @@ class StyleAnalyzer:
             emoji_usage_rate=emoji_rate,
             vocabulary_complexity=vocab_complexity,
             sentence_structure=structure,
+            sentiment_distribution=sentiment_distribution,
+            emotion_patterns=emotion_patterns,
+            dominant_sentiment=dominant_sentiment,
+            response_time_pattern=response_pattern,
         )

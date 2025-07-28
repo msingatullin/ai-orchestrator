@@ -89,6 +89,13 @@ def test_style_analyzer():
     pipeline = NLPPipeline()
     processed = [pipeline.process(m) for m in msgs]
     analyzer = StyleAnalyzer()
-    style = analyzer.analyze(processed, user_id="11111111-1111-1111-1111-111111111111", source="telegram")
+    style = analyzer.analyze(
+        processed,
+        user_id="11111111-1111-1111-1111-111111111111",
+        source="telegram",
+    )
     assert style.avg_message_length > 0
+    assert style.dominant_sentiment in {"positive", "neutral", "negative"}
+    assert style.sentiment_distribution
+    assert style.emotion_patterns == {}
 
