@@ -11,9 +11,9 @@ from logging.config import fileConfig
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from backend.config.database import Base, get_engine
+from backend.app.config.database import Base, get_engine
 
 config = context.config
 fileConfig(config.config_file_name)
