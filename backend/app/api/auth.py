@@ -40,7 +40,7 @@ def login(user_in: UserCreate, db: Session = Depends(get_db)):
     return Token(access_token=access_token, refresh_token=refresh.token)
 
 
-@router.post("/refresh", response_model=Token)
+@router.post("/refresh", response_model=Token, dependencies=rate_dep)
 def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
     service = AuthService(db)
     rt = service.get_refresh_token(refresh_token)
