@@ -14,7 +14,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
     volumes:
       - ./backend:/app/backend
-      - ./alembic:/app/alembic
+      - ./backend/migrations:/app/alembic
       - ./alembic.ini:/app/alembic.ini
       - ./entrypoint.sh:/app/entrypoint.sh
 
