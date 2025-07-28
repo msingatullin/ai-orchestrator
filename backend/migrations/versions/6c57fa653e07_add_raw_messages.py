@@ -30,7 +30,7 @@ def upgrade() -> None:
         sa.Column('raw_content', sa.String(), nullable=False),
         sa.Column('metadata', sa.JSON(), nullable=True),
         sa.Column('timestamp', sa.DateTime(timezone=True), nullable=False),
-        sa.Column('is_outgoing', sa.Boolean(), nullable=False, server_default=sa.text('0')),
+        sa.Column('is_outgoing', sa.Boolean(), nullable=False, server_default=sa.text('false')),
         sa.Column('conversation_id', sa.String(), nullable=True),
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.func.now()),
     )
