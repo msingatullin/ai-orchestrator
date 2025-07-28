@@ -1,5 +1,6 @@
 __pycache__/
 *.py[cod]
 .vscode/
-nginx/tls/
+nginx/tls/*
+!nginx/tls/.gitkeep
 .env.production

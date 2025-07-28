@@ -20,9 +20,20 @@ jobs:
       - name: Run tests
         run: pytest -q
 
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: test
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
