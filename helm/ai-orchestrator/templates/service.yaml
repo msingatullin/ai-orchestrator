@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ai-orchestrator.fullname" . }}
+  labels:
+    app: {{ include "ai-orchestrator.name" . }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 8000
+  selector:
+    app: {{ include "ai-orchestrator.name" . }}

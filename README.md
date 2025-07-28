@@ -33,3 +33,25 @@ docker compose --profile staging -f docker-compose.yml -f docker-compose.staging
 ```
 
 При старте контейнера автоматически выполняются Alembic миграции, а Nginx доступен на порту 80.
+
+### TLS
+
+Для продакшена предусмотрен проксирующий Nginx с поддержкой HTTPS. Поместите сертификаты в каталог `nginx/tls` (`tls.crt` и `tls.key`), после чего контейнер Nginx будет слушать также порт 443.
+
+### Мониторинг
+
+Метрики Prometheus публикуются приложением на `/metrics`. Для их сбора добавлен Compose‑файл `docker-compose.monitoring.yml`, который запускает Prometheus и Grafana:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
+```
+
+Конфигурация Prometheus расположена в `monitoring/prometheus.yml`.
+
+### Helm‑чарт
+
+В каталоге `helm/ai-orchestrator` находится минимальный Helm‑чарт для деплоя в Kubernetes. Перед установкой задайте образ и домен в `values.yaml`:
+
+```bash
+helm install ai-orchestrator helm/ai-orchestrator
+```

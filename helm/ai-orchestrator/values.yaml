@@ -1,0 +1,20 @@
+image:
+  repository: ai-orchestrator
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: ai.example.com
+      paths:
+        - /
+  tls:
+    - secretName: ai-orchestrator-tls
+      hosts:
+        - ai.example.com
