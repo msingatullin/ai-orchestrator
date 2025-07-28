@@ -30,6 +30,7 @@ class EmbeddingService:
         self.model = None
         self.dimension = None
         self.use_openai = False
+        self._fallback = False
         self.openai_model = openai_model
 
         if SentenceTransformer is not None:
@@ -55,7 +56,10 @@ class EmbeddingService:
                 logger.warning("OpenAI init failed: %s", exc)
 
         if self.model is None and not self.use_openai:
-            raise RuntimeError("No embedding backend available")
+            logger.warning("No embedding backend available, using simple fallback")
+            self.dimension = 384
+            self._fallback = True
+            return
 
     def encode_text(self, text: str) -> List[float]:
         """Encode text into a vector using the selected backend."""
@@ -69,5 +73,14 @@ class EmbeddingService:
             if self.dimension is None:
                 self.dimension = len(vec)
             return list(vec)
+
+        if getattr(self, "_fallback", False):
+            import hashlib
+            h = hashlib.sha256(text.encode()).digest()
+            vec = []
+            while len(vec) < self.dimension:
+                h = hashlib.sha256(h).digest()
+                vec.extend([b / 255 for b in h])
+            return [float(v) for v in vec[: self.dimension]]
 
         raise RuntimeError("Embedding model not initialized")
