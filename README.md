@@ -36,7 +36,17 @@ docker compose --profile staging -f docker-compose.yml -f docker-compose.staging
 
 ### TLS
 
-Для продакшена предусмотрен проксирующий Nginx с поддержкой HTTPS. Поместите сертификаты в каталог `nginx/tls` (`tls.crt` и `tls.key`), после чего контейнер Nginx будет слушать также порт 443.
+Для продакшена предусмотрен проксирующий Nginx с поддержкой HTTPS. Сертификаты можно
+получить через [Certbot](https://certbot.eff.org/) или использовать Origin‑сертификат
+Cloudflare. Для автоматического выпуска Let's Encrypt сертификата добавлен скрипт
+`scripts/certbot.sh`:
+
+```bash
+DOMAIN=ai.example.com EMAIL=admin@example.com ./scripts/certbot.sh
+```
+
+Файлы `tls.crt` и `tls.key` будут сохранены в каталоге `nginx/tls`. После их
+размещения контейнер Nginx будет слушать также порт 443.
 
 ### Мониторинг
 
@@ -46,7 +56,7 @@ docker compose --profile staging -f docker-compose.yml -f docker-compose.staging
 docker compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
 ```
 
-Конфигурация Prometheus расположена в `monitoring/prometheus.yml`.
+Конфигурация Prometheus расположена в `monitoring/prometheus.yml`. По умолчанию Grafana будет доступна на `http://localhost:3000` (логин/пароль `admin/admin`).
 
 ### Helm‑чарт
 
