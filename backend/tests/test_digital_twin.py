@@ -21,6 +21,10 @@ async def test_create_and_generate():
     response = await service.generate_response(twin.id, "Hello")
     assert "Tester" in response
 
+    await service.feedback.record_feedback(twin.id, "msg", 5)
+    history = service.feedback.get_feedback_history(twin.id)
+    assert ("msg", 5) in history
+
 
 @pytest.mark.asyncio
 async def test_api_endpoints():
@@ -47,3 +51,10 @@ async def test_api_endpoints():
         resp = await ac.post(f"/digital-twin/{twin_id}/generate", params={"query": "hi"})
         assert resp.status_code == 200
         assert "Tester" in resp.json()["response"]
+
+        resp = await ac.post(f"/digital-twin/{twin_id}/feedback", params={"message": "ok", "rating": 1})
+        assert resp.status_code == 200
+
+        resp = await ac.get(f"/digital-twin/{twin_id}/feedback")
+        assert resp.status_code == 200
+        assert ["ok", 1] == resp.json()["feedback"][0]

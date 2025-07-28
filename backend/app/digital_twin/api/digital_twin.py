@@ -31,3 +31,11 @@ async def feedback(twin_id: UUID, message: str, rating: int) -> dict:
         raise HTTPException(status_code=404, detail="twin not found")
     success = await service.feedback.record_feedback(twin_id, message, rating)
     return {"success": success}
+
+
+@router.get("/{twin_id}/feedback")
+async def feedback_history(twin_id: UUID) -> dict:
+    if twin_id not in service.twins:
+        raise HTTPException(status_code=404, detail="twin not found")
+    history = service.feedback.get_feedback_history(twin_id)
+    return {"feedback": history}
